@@ -44,10 +44,11 @@ class Breakthrough:
             return
 
         def set(self, sqr, pce):
-            assert(0 <= sqr < self.rows() * self.cols())
+            assert (0 <= sqr < self.rows() * self.cols())
             if self._board[sqr] != self.NoPce:
                 self._hash_key ^= self._hash_board[self._board[sqr]][sqr]
-            self._hash_key ^= self._hash_board[pce][sqr]
+            if pce != self.NoPce:
+                self._hash_key ^= self._hash_board[pce][sqr]
             self._board[sqr] = pce
             return
 
