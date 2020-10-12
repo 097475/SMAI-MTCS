@@ -23,13 +23,15 @@ class MCTSAgent:
     def play(self, game, check_abort):
         """ Returns the "best" move to play in the current <game>-state, after some deliberation (<check_abort>).
         """
-        # return mtcs(game, check_abort)
+        return mtcs(game, check_abort)
+        '''
         solver = mtcs2.MCTS()
         root = mtcs2.Node(game, None)
         n = 0
         while not check_abort.do_abort():
             solver.do_rollout(root)
             n = n+1
-            print(n)
+        print(n)
         move = solver.choose(root).move
         return move, 0
+        '''
