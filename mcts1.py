@@ -47,7 +47,6 @@ def simulation_policy(state, color):
     while not state.is_terminal():
         move = state.generate(True)[0]  # shuffle the moves so we can always pick the first move
         state.make(move)  # apply the move
-
     # if the next move is ours, we have lost
     if state.get_to_move() == color:
         return -1

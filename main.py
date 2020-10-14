@@ -34,7 +34,7 @@ def play_a_game(game, A, output):
 ap = argparse.ArgumentParser()
 ap.add_argument("-b", "--board", default=6, help="Boardsize (nxn).", type=int)
 ap.add_argument("-g", "--games", default=1, help="Number of games to play (with each color).", type=int)
-ap.add_argument("-t", "--time", default=0.1, help="Max deliberation time.",type=float)
+ap.add_argument("-t", "--time", default=0.01, help="Max deliberation time.",type=float)
 ap.add_argument("-d", "--debug", default=False, help="Increase output verbosity.", action="store_true")
 args = vars(ap.parse_args())
 print(args)

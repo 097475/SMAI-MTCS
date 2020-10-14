@@ -1,6 +1,7 @@
 import utils
-from mcts import *
+from mcts1 import *
 import mtcs2
+import mcts3
 
 
 #
@@ -23,15 +24,19 @@ class MCTSAgent:
     def play(self, game, check_abort):
         """ Returns the "best" move to play in the current <game>-state, after some deliberation (<check_abort>).
         """
-        return mtcs(game, check_abort)
-        '''
+        # algorithm 1, uncomment to use
+        # return mtcs1(game, check_abort)
+
+        #algorithm 2, uncomment to use
         solver = mtcs2.MCTS()
         root = mtcs2.Node(game, None)
         n = 0
-        while not check_abort.do_abort():
+        for i in range(1000):
             solver.do_rollout(root)
             n = n+1
-        print(n)
+            print(n)
         move = solver.choose(root).move
         return move, 0
-        '''
+
+        #algorithm 3, uncomment to use
+        #return mcts3.solve(game)
