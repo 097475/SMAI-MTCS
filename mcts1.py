@@ -105,8 +105,8 @@ def mtcs(game, check_abort):
         selected_state = tree_policy(copy.deepcopy(game))  # selection and expansion
         outcome = simulation_policy(copy.deepcopy(selected_state), color)  # simulation
         backup(selected_state.get_key(), outcome)  # backup
-        sims = sims + 1
-        # print(sims)
+        #sims = sims + 1
+        #print(sims)
     # print(tree)
     return pick_move(game)  # returns the move and its value
 

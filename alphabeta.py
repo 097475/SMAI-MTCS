@@ -22,6 +22,7 @@ def ab(game, ply, depth, alpha, beta, check_abort):
     assert(alpha < beta)
 
     def evaluate():
+        return 0  # <== NOTE, PLEASE add this to have evaluate always return 0.
         pieces = game.get_pce_count()
         if game.get_to_move() == game.White:
             return pieces[game.White] - pieces[game.Black]

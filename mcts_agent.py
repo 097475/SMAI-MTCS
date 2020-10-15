@@ -1,5 +1,5 @@
 import utils
-from mcts1 import *
+import mcts1
 import mtcs2
 import mcts3
 
@@ -19,15 +19,16 @@ class MCTSAgent:
         """ This function clears your internal data-structures, so the next
         call to play() starts with a fresh state (ie., no history information).
         """
-        reset_tree()
+        mcts1.reset_tree()
 
     def play(self, game, check_abort):
         """ Returns the "best" move to play in the current <game>-state, after some deliberation (<check_abort>).
         """
         # algorithm 1, uncomment to use
-        # return mtcs1(game, check_abort)
+        return mcts1.mtcs(game, check_abort)
 
         #algorithm 2, uncomment to use
+        """
         solver = mtcs2.MCTS()
         root = mtcs2.Node(game, None)
         n = 0
@@ -37,6 +38,7 @@ class MCTSAgent:
             print(n)
         move = solver.choose(root).move
         return move, 0
+        """
 
         #algorithm 3, uncomment to use
         #return mcts3.solve(game)
