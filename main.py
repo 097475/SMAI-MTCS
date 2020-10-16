@@ -33,13 +33,13 @@ def play_a_game(game, A, output):
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-b", "--board", default=6, help="Boardsize (nxn).", type=int)
-ap.add_argument("-g", "--games", default=1, help="Number of games to play (with each color).", type=int)
-ap.add_argument("-t", "--time", default=0.5, help="Max deliberation time.", type=float)
+ap.add_argument("-g", "--games", default=10, help="Number of games to play (with each color).", type=int)
+ap.add_argument("-t", "--time", default=1, help="Max deliberation time.", type=float)
 ap.add_argument("-d", "--debug", default=False, help="Increase output verbosity.", action="store_true")
-ap.add_argument("-i", "--iterdepth", default=4, help="Max iteration-depth for AB.", type=int)
+ap.add_argument("-i", "--iterdepth", default=5, help="Max iteration-depth for AB.", type=int)
 ap.add_argument("-s", "--simulations", default=0, help="Max number of MCTS simulations.", type=int)
 ap.add_argument("-e", "--eval", default=False, help="Use evaluation function in AB.", action="store_true")
-ap.add_argument("-a", "--advanced", default=False, help="Use advanced MCTS variant.", action="store_true")
+ap.add_argument("-a", "--advanced", default=True, help="Use advanced MCTS variant.", action="store_true")
 
 args = vars(ap.parse_args())
 print(args)
