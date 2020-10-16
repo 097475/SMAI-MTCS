@@ -84,8 +84,14 @@ def rave_simulation_policy(state):
     # simulate until a terminal state
     while not state.is_terminal():
         moves = state.generate()
-        idx = np.random.choice(len(moves))
-        move = moves[idx]  # shuffle the moves so we can always pick the first move
+        move = None
+        for m in moves:
+            if m[2] != -1:
+                move = m
+                break
+        if not move:
+            idx = np.random.choice(len(moves))
+            move = moves[idx]  # shuffle the moves so we can always pick the first move
         state.make(move)  # apply the move
         used_moves.append(move)  # save the hash key of the reached state
     # if the next move corresponds to the color in the initial state, that player lost
@@ -155,8 +161,14 @@ def simulation_policy(state):
     # simulate until a terminal state
     while not state.is_terminal():
         moves = state.generate()
-        idx = np.random.choice(len(moves))
-        move = moves[idx]  # shuffle the moves so we can always pick the first move
+        move = None
+        for m in moves:
+            if m[2] != -1:
+                move = m
+                break
+        if not move:
+            idx = np.random.choice(len(moves))
+            move = moves[idx]  # shuffle the moves so we can always pick the first move
         state.make(move)  # apply the move
     # if the next move corresponds to the color in the initial state, that player lost
     if state.get_to_move() == color:
