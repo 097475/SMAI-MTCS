@@ -13,6 +13,7 @@ class MCTSAgent:
     def __init__(self, params):
         self._params = params
         self._params["c"] = 0.5
+        self._params["k"] = 10
         return
 
     def name(self):
