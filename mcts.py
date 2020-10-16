@@ -65,7 +65,7 @@ def rave_best_child(state, c, k):
     def rave_UCT(node):
         uct = -(node["values"]["value"] / node["values"]["count"])
         rave = -(node["values"]["rave"] / node["values"]["rave_count"]) if node["values"]["rave_count"] > 0 else 0
-        expl = c * (math.sqrt(2 * math.log(state_count)) / node["values"]["count"])
+        expl = c * (math.sqrt(math.log(state_count)) / node["values"]["count"])
         beta = math.sqrt(k / ((3 * (node["values"]["count"] + node["values"]["rave_count"])) + k))
         return (beta * rave + (1 - beta) * uct) + expl
 
@@ -191,9 +191,9 @@ def best_child(state, c):
         state.retract(move)
     # compute the node that has the highest UCT value
     best_node = functools.reduce(lambda a, b: a if -(a["values"]["value"] / a["values"]["count"])
-                                                   + c * math.sqrt(2 * math.log(state_count)) / a["values"]["count"] >
+                                                   + c * math.sqrt(math.log(state_count)) / a["values"]["count"] >
                                                    -(b["values"]["value"] / b["values"]["count"])
-                                                   + c * math.sqrt(2 * math.log(state_count)) / b["values"][
+                                                   + c * math.sqrt(math.log(state_count)) / b["values"][
                                                        "count"] else b,
                                  children)
     state.make(best_node["move"])
