@@ -1,7 +1,5 @@
 import utils
 import mcts
-import mtcs2
-import mcts3
 
 
 #
@@ -30,4 +28,6 @@ class MCTSAgent:
         """ Returns the "best" move to play in the current <game>-state, after some deliberation (<check_abort>).
         """
         # algorithm 1, uncomment to use
-        return mcts.mcts(game, check_abort, self._params)
+        move, value = mcts.mcts(game, check_abort, self._params)
+        self.reset()
+        return move, value

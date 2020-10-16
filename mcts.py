@@ -4,7 +4,7 @@
 import copy
 import math
 import functools
-import numpy as np
+import random
 
 # reset this structure every time
 tree = dict()
@@ -91,18 +91,17 @@ def rave_simulation_policy(state):
                 move = m
                 break
         if not move:
-            idx = np.random.choice(len(moves))
-            move = moves[idx]  # shuffle the moves so we can always pick the first move
+            move = random.choice(moves)
         state.make(move)  # apply the move
         used_moves.append((move, state.get_to_move()))  # save the hash key of the reached state
     # if the next move corresponds to the color in the initial state, that player lost
     if state.get_to_move() == color:
-        return -1, used_moves, color
+        return -1, color
     else:
-        return 1, used_moves, color
+        return 1, color
 
 
-def rave_backup(state_key, outcome, used_moves, color):
+def rave_backup(state_key, outcome, color):
     # recursively update values until the key is None (root)
     def _backup(_state_key, _outcome):
         if _state_key:
@@ -161,8 +160,7 @@ def simulation_policy(state):
     # simulate until a terminal state
     while not state.is_terminal():
         moves = state.generate()
-        idx = np.random.choice(len(moves))
-        move = moves[idx]  # shuffle the moves so we can always pick the first move
+        move = random.choice(moves)
         state.make(move)  # apply the move
     # if the next move corresponds to the color in the initial state, that player lost
     if state.get_to_move() == color:
@@ -239,8 +237,8 @@ def advanced_mcts(game, check_abort, c, k):
     while not check_abort.do_abort():
         selected_state = rave_tree_policy(copy.deepcopy(game), c, k)  # selection and expansion
         selected_state_key = selected_state.get_key()
-        outcome, reached_states, color = rave_simulation_policy(selected_state)  # simulation
-        rave_backup(selected_state_key, outcome, reached_states, color)  # backup
+        outcome, color = rave_simulation_policy(selected_state)  # simulation
+        rave_backup(selected_state_key, outcome, color)  # backup
         used_moves.clear()
     return pick_move(game)  # returns the move and its value
 
