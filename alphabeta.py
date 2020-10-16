@@ -12,6 +12,8 @@ def id_ab(game, check_abort):
             best_move = move
             best_value = value
         depth += 1
+        if depth >= 4:
+            break
     return best_move, best_value
 
 

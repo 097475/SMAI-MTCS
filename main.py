@@ -12,9 +12,6 @@ def play_a_game(game, A, output):
     n = 0
     while not game.is_terminal():
         move, value = A[n%2].play(copy.deepcopy(game), utils.CheckAbort(time))
-        #############
-        A[n % 2].reset()
-        ###############
         assert(move != utils.NoMove)
         game.make(move)
         if output:
