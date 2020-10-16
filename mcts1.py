@@ -2,7 +2,6 @@
 # Add code here as needed.
 #
 import copy
-# import breakthrough
 import math
 import functools
 import numpy as np
@@ -15,7 +14,7 @@ def reset_tree():
     tree.clear()
 
 
-def tree_policy(state):  # state is always the root state at first
+def tree_policy(state, c):  # state is always the root state at first
     def expand(node):  # node is a game state whose we want to generate all children
         key = node.get_key()  # get the hash key of node
         moves = node.generate()  # get all moves from node
@@ -41,7 +40,7 @@ def tree_policy(state):  # state is always the root state at first
             state.retract(m)  # retract the move
 
         # no ghost nodes, then pick best child according to UCT and apply tree policy again
-        return tree_policy(best_child(state))
+        return tree_policy(best_child(state, c), c)
 
 
 # modifies state permanently
@@ -70,8 +69,7 @@ def backup(state_key, outcome):
 
 
 # modifies state permanently
-def best_child(state):
-    c = math.sqrt(2)  # set the exploration constant # TODO: change c
+def best_child(state, c):
     moves = tree[state.get_key()]["moves"]  # generate all moves from current state
     # save the number of times the current state was visited for future. Due to transpositions, sometimes ghost nodes
     # have children, in which case state_count becomes 1
@@ -109,27 +107,17 @@ def pick_move(state):
     return best_node["move"], best_node["values"]["count"]
 
 
-def mtcs(game, check_abort):
+def mtcs(game, check_abort, params):
     # moves is true if the node had children expanded, false otherwise
     # parent contains the hashcode of parent node, count is the number of times the node was visited
     # value is the backed up value of the node
     tree[game.get_key()] = {'moves': None, 'parent': None, 'count': 0, 'value': 0}
-    sims = 0
+    c = params["c"]  # parameter for value of c in UCT formula
+    advanced = params["advanced"]  # if true, use improvements
+    max_simulations = params["simulations"]  # this can be used to limit simulations (we don't use it)
     while not check_abort.do_abort():
-        selected_state = tree_policy(copy.deepcopy(game))  # selection and expansion
+        selected_state = tree_policy(copy.deepcopy(game), c)  # selection and expansion
         selected_state_key = selected_state.get_key()
         outcome = simulation_policy(selected_state)  # simulation
         backup(selected_state_key, outcome)  # backup
-        sims = sims + 1
-    print(sims)
-    #print(tree)
     return pick_move(game)  # returns the move and its value
-
-
-'''
-if __name__ == '__main__':
-    g = breakthrough.Breakthrough(6, 6)
-    g.setup()
-    g_copy = copy.deepcopy(g)
-    print(mtcs(g_copy))
-'''

@@ -12,6 +12,7 @@ import mcts3
 class MCTSAgent:
     def __init__(self, params):
         self._params = params
+        self._params["c"] = 0.5
         return
 
     def name(self):
@@ -28,7 +29,7 @@ class MCTSAgent:
         """ Returns the "best" move to play in the current <game>-state, after some deliberation (<check_abort>).
         """
         # algorithm 1, uncomment to use
-        return mcts1.mtcs(game, check_abort)
+        return mcts1.mtcs(game, check_abort, self._params)
 
         #algorithm 2, uncomment to use
         """
