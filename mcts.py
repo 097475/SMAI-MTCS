@@ -107,17 +107,33 @@ def pick_move(state):
     return best_node["move"], best_node["values"]["count"]
 
 
-def mtcs(game, check_abort, params):
+def base_mcts(game, check_abort, c):
     # moves is true if the node had children expanded, false otherwise
     # parent contains the hashcode of parent node, count is the number of times the node was visited
     # value is the backed up value of the node
     tree[game.get_key()] = {'moves': None, 'parent': None, 'count': 0, 'value': 0}
-    c = params["c"]  # parameter for value of c in UCT formula
-    advanced = params["advanced"]  # if true, use improvements
-    max_simulations = params["simulations"]  # this can be used to limit simulations (we don't use it)
     while not check_abort.do_abort():
         selected_state = tree_policy(copy.deepcopy(game), c)  # selection and expansion
         selected_state_key = selected_state.get_key()
         outcome = simulation_policy(selected_state)  # simulation
         backup(selected_state_key, outcome)  # backup
     return pick_move(game)  # returns the move and its value
+
+def advanced_mcts(game, check_abort, c):
+    # moves is true if the node had children expanded, false otherwise
+    # parent contains the hashcode of parent node, count is the number of times the node was visited
+    # value is the backed up value of the node
+    tree[game.get_key()] = {'moves': None, 'parent': None, 'count': 0, 'value': 0}
+    while not check_abort.do_abort():
+        selected_state = tree_policy(copy.deepcopy(game), c)  # selection and expansion
+        selected_state_key = selected_state.get_key()
+        outcome = simulation_policy(selected_state)  # simulation
+        backup(selected_state_key, outcome)  # backup
+    return pick_move(game)  # returns the move and its value
+
+
+def mcts(game, check_abort, params):
+    c = params["c"]  # parameter for value of c in UCT formula
+    advanced = params["advanced"]  # if true, use improvements
+    max_simulations = params["simulations"]  # this can be used to limit simulations (we don't use it)
+    return advanced_mcts(game, check_abort, c) if advanced else base_mcts(game, check_abort, c)
