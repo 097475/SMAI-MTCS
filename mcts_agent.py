@@ -31,19 +31,3 @@ class MCTSAgent:
         """
         # algorithm 1, uncomment to use
         return mcts.mcts(game, check_abort, self._params)
-
-        #algorithm 2, uncomment to use
-        """
-        solver = mtcs2.MCTS()
-        root = mtcs2.Node(game, None)
-        n = 0
-        for i in range(1000):
-            solver.do_rollout(root)
-            n = n+1
-            print(n)
-        move = solver.choose(root).move
-        return move, 0
-        """
-
-        #algorithm 3, uncomment to use
-        #return mcts3.solve(game)

@@ -9,9 +9,11 @@ import numpy as np
 # reset this structure every time
 tree = dict()
 move_tree = dict()
+used_moves = []
 
 def reset_tree():
     tree.clear()
+    move_tree.clear()
 
 
 ###############à ADVANCED FUNCTIONS HERE ########################
@@ -42,6 +44,7 @@ def rave_tree_policy(state, c, k):  # state is always the root state at first
         for m in tree[state.get_key()]["moves"]:
             state.make(m)  # apply the move
             if tree[state.get_key()]["count"] == 0:  # if there's a ghost node, return it
+                used_moves.append((m, state.get_to_move()))  # save the hash key of the reached state
                 return state
             state.retract(m)  # retract the move
 
@@ -72,14 +75,13 @@ def rave_best_child(state, c, k):
     # compute the node that has the highest UCT value
     best_node = functools.reduce(lambda a, b: a if rave_UCT(a) > rave_UCT(b) else b, children)
     state.make(best_node["move"])
+    used_moves.append((best_node["move"], state.get_to_move()))  # save the hash key of the reached state
     return state
 
 
 def rave_simulation_policy(state):
     # save whose turn it is in current state
     color = state.get_to_move()
-    # save used moves
-    used_moves = []
     # simulate until a terminal state
     while not state.is_terminal():
         moves = state.generate()
@@ -239,6 +241,7 @@ def advanced_mcts(game, check_abort, c, k):
         selected_state_key = selected_state.get_key()
         outcome, reached_states, color = rave_simulation_policy(selected_state)  # simulation
         rave_backup(selected_state_key, outcome, reached_states, color)  # backup
+        used_moves.clear()
     return pick_move(game)  # returns the move and its value
 
 
