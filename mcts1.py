@@ -22,8 +22,9 @@ def tree_policy(state):  # state is always the root state at first
         tree[key]["moves"] = moves  # save that node's children were expanded
         for move in moves:
             node.make(move)  # apply the move
-            # add the move to the tree, saving the hash key of its parent
-            tree[node.get_key()] = {'moves': None, 'parent': key, 'count': 0, 'value': 0}
+            # add the move to the tree, saving the hash key of its parent, unless the node already exist (transposition)
+            if not node.get_key() in tree:
+                tree[node.get_key()] = {'moves': None, 'parent': key, 'count': 0, 'value': 0}
             node.retract(move)  # retract the move
 
     if state.is_terminal():
@@ -44,14 +45,16 @@ def tree_policy(state):  # state is always the root state at first
 
 
 # modifies state permanently
-def simulation_policy(state, color):
+def simulation_policy(state):
+    # save whose turn it is in current state
+    color = state.get_to_move()
     # simulate until a terminal state
     while not state.is_terminal():
         moves = state.generate()
         idx = np.random.choice(len(moves))
         move = moves[idx]  # shuffle the moves so we can always pick the first move
         state.make(move)  # apply the move
-    # if the next move is ours, we have lost
+    # if the next move corresponds to the color in the initial state, that player lost
     if state.get_to_move() == color:
         return -1
     else:
@@ -70,7 +73,9 @@ def backup(state_key, outcome):
 def best_child(state):
     c = math.sqrt(2)  # set the exploration constant # TODO: change c
     moves = tree[state.get_key()]["moves"]  # generate all moves from current state
-    state_count = tree[state.get_key()]["count"]  # save the number of times the current state was visited for future
+    # save the number of times the current state was visited for future. Due to transpositions, sometimes ghost nodes
+    # have children, in which case state_count becomes 1
+    state_count = tree[state.get_key()]["count"] if tree[state.get_key()]["count"] > 0 else 1
     children = []
     # save all the children in a list with a copy of their state
     for move in moves:
@@ -78,9 +83,9 @@ def best_child(state):
         children.append({"move": move, "values": tree[state.get_key()]})
         state.retract(move)
     # compute the node that has the highest UCT value
-    best_node = functools.reduce(lambda a, b: a if a["values"]["value"] / a["values"]["count"]
+    best_node = functools.reduce(lambda a, b: a if -(a["values"]["value"] / a["values"]["count"])
                                                    + c * math.sqrt(2 * math.log(state_count)) / a["values"]["count"] >
-                                                   b["values"]["value"] / b["values"]["count"]
+                                                   -(b["values"]["value"] / b["values"]["count"])
                                                    + c * math.sqrt(2 * math.log(state_count)) / b["values"][
                                                        "count"] else b,
                                  children)
@@ -105,7 +110,6 @@ def pick_move(state):
 
 
 def mtcs(game, check_abort):
-    color = game.get_to_move()  # save your own color
     # moves is true if the node had children expanded, false otherwise
     # parent contains the hashcode of parent node, count is the number of times the node was visited
     # value is the backed up value of the node
@@ -114,11 +118,11 @@ def mtcs(game, check_abort):
     while not check_abort.do_abort():
         selected_state = tree_policy(copy.deepcopy(game))  # selection and expansion
         selected_state_key = selected_state.get_key()
-        outcome = simulation_policy(selected_state, color)  # simulation
+        outcome = simulation_policy(selected_state)  # simulation
         backup(selected_state_key, outcome)  # backup
         sims = sims + 1
     print(sims)
-    # print(tree)
+    #print(tree)
     return pick_move(game)  # returns the move and its value
 
 

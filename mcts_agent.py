@@ -10,6 +10,9 @@ import mcts3
 
 
 class MCTSAgent:
+    def __init__(self, params):
+        self._params = params
+        return
 
     def name(self):
         """ Return agent's name."""
@@ -25,7 +28,6 @@ class MCTSAgent:
         """ Returns the "best" move to play in the current <game>-state, after some deliberation (<check_abort>).
         """
         # algorithm 1, uncomment to use
-        self.reset()
         return mcts1.mtcs(game, check_abort)
 
         #algorithm 2, uncomment to use

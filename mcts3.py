@@ -50,6 +50,6 @@ class Action():
 
 def solve(game):
     initialState = State(game)
-    _mcts = mcts(iterationLimit=1000)
+    _mcts = mcts(iterationLimit=100)
     bestAction = _mcts.search(initialState=initialState)
     return bestAction.move, 0
