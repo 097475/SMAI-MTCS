@@ -34,20 +34,12 @@ def rave_tree_policy(state, c, k):  # state is always the root state at first
                     move_tree[move_key].append(node.get_key())
             node.retract(move)  # retract the move
 
-    if state.is_terminal():
+    if state.is_terminal() or tree[state.get_key()]["count"] == 0:
         return state
     else:
         # if node was not expanded, generate all children
         if not tree[state.get_key()]["moves"]:
             expand(state)
-        # check if there's any ghost node among the current node children
-        for m in tree[state.get_key()]["moves"]:
-            state.make(m)  # apply the move
-            if tree[state.get_key()]["count"] == 0:  # if there's a ghost node, return it
-                used_moves.append((m, state.get_to_move()))  # save the hash key of the reached state
-                return state
-            state.retract(m)  # retract the move
-
         # no ghost nodes, then pick best child according to UCT and apply tree policy again
         return rave_tree_policy(rave_best_child(state, c, k), c, k)
 
@@ -62,6 +54,9 @@ def rave_best_child(state, c, k):
     # save all the children in a list with a copy of their state
     for move in moves:
         state.make(move)
+        if tree[state.get_key()]["count"] == 0:  # if there's a ghost node, return it
+            used_moves.append((move, state.get_to_move()))  # save the hash key of the reached state
+            return state
         children.append({"move": move, "values": tree[state.get_key()]})
         state.retract(move)
 
@@ -136,19 +131,12 @@ def tree_policy(state, c):  # state is always the root state at first
                 tree[node.get_key()] = {'moves': None, 'parent': key, 'count': 0, 'value': 0}
             node.retract(move)  # retract the move
 
-    if state.is_terminal():
+    if state.is_terminal() or tree[state.get_key()]["count"] == 0:
         return state
     else:
         # if node was not expanded, generate all children
         if not tree[state.get_key()]["moves"]:
             expand(state)
-        # check if there's any ghost node among the current node children
-        for m in tree[state.get_key()]["moves"]:
-            state.make(m)  # apply the move
-            if tree[state.get_key()]["count"] == 0:  # if there's a ghost node, return it
-                return state
-            state.retract(m)  # retract the move
-
         # no ghost nodes, then pick best child according to UCT and apply tree policy again
         return tree_policy(best_child(state, c), c)
 
@@ -187,6 +175,8 @@ def best_child(state, c):
     # save all the children in a list with a copy of their state
     for move in moves:
         state.make(move)
+        if tree[state.get_key()]["count"] == 0:
+            return state
         children.append({"move": move, "values": tree[state.get_key()]})
         state.retract(move)
     # compute the node that has the highest UCT value
