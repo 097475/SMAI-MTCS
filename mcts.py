@@ -64,7 +64,7 @@ def rave_best_child(state, c, k):
         uct = -(node["values"]["value"] / node["values"]["count"])
         rave = -(node["values"]["rave"] / node["values"]["rave_count"]) if node["values"]["rave_count"] > 0 else 0
         expl = c * (math.sqrt(math.log(state_count)) / node["values"]["count"])
-        beta = math.sqrt(k / ((3 * (node["values"]["count"] + node["values"]["rave_count"])) + k))
+        beta = math.sqrt(k / ((3 * node["values"]["count"]) + k))
         return (beta * rave + (1 - beta) * uct) + expl
 
     # compute the node that has the highest UCT value
