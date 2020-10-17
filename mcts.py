@@ -16,7 +16,7 @@ def reset_tree():
     move_tree.clear()
 
 
-###############à ADVANCED FUNCTIONS HERE ########################
+############### ADVANCED FUNCTIONS HERE ########################
 def rave_tree_policy(state, c, k):  # state is always the root state at first
     def expand(node):  # node is a game state whose we want to generate all children
         key = node.get_key()  # get the hash key of node
